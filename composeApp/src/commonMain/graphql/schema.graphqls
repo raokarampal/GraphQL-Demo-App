@@ -1,0 +1,283 @@
+# GitHub GraphQL API Schema (Simplified for Demo)
+# Based on https://docs.github.com/en/graphql
+
+schema {
+  query: Query
+}
+
+type Query {
+  # Get information about the currently authenticated user
+  viewer: User!
+
+  # Look up a user by login
+  user(login: String!): User
+
+  # Look up a repository by owner and name
+  repository(owner: String!, name: String!): Repository
+
+  # Search for repositories
+  search(query: String!, type: SearchType!, first: Int): SearchResultItemConnection!
+}
+
+enum SearchType {
+  REPOSITORY
+  USER
+  ISSUE
+}
+
+type SearchResultItemConnection {
+  edges: [SearchResultItemEdge]
+  nodes: [SearchResultItem]
+  pageInfo: PageInfo!
+  repositoryCount: Int!
+  userCount: Int!
+  issueCount: Int!
+}
+
+type SearchResultItemEdge {
+  cursor: String!
+  node: SearchResultItem
+}
+
+union SearchResultItem = Repository | User | Issue
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type User {
+  id: ID!
+  login: String!
+  name: String
+  avatarUrl: String!
+  bio: String
+  company: String
+  email: String
+  location: String
+  url: String!
+  websiteUrl: String
+  repositories(first: Int, after: String): RepositoryConnection!
+  starredRepositories(first: Int, after: String): RepositoryConnection!
+  followers(first: Int, after: String): FollowerConnection!
+  following(first: Int, after: String): FollowingConnection!
+}
+
+type RepositoryConnection {
+  edges: [RepositoryEdge]
+  nodes: [Repository]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type RepositoryEdge {
+  cursor: String!
+  node: Repository
+}
+type Repository{
+  id: ID!
+  name: String!
+  nameWithOwner: String!
+  description: String
+  url: String!
+  homepageUrl: String
+  stargazerCount: Int!
+  forkCount: Int!
+  isPrivate: Boolean!
+  owner: RepositoryOwner!
+  primaryLanguage: Language
+  languages(first: Int, after: String): LanguageConnection!
+  issues(first: Int, after: String, states: [IssueState!]): IssueConnection!
+  pullRequests(first: Int, after: String, states: [PullRequestState!]): PullRequestConnection!
+  object(
+    expression: String
+    oid: GitObjectID
+  ): GitObject
+  openGraphImageUrl: URI!
+  latestRelease: Release
+  releases(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ReleaseConnection!
+}
+
+type ReleaseConnection {
+  edges: [ReleaseEdge]
+  nodes: [Release]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ReleaseEdge {
+  cursor: String!
+  node: Release
+}
+
+
+type Release implements Node {
+  author: User
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  isLatest: Boolean!
+  isPrerelease: Boolean!
+  name: String
+  publishedAt: DateTime
+  repository: Repository!
+  tagName: String!
+  updatedAt: DateTime!
+  url: URI!
+}
+
+interface RepositoryOwner {
+  id: ID!
+  login: String!
+  url: String!
+  avatarUrl: String!
+}
+
+type Language {
+  id: ID!
+  name: String!
+  color: String
+}
+
+type LanguageConnection {
+  edges: [LanguageEdge]
+  nodes: [Language]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type LanguageEdge {
+  cursor: String!
+  node: Language
+  size: Int!
+}
+
+enum IssueState {
+  OPEN
+  CLOSED
+}
+
+type IssueConnection {
+  edges: [IssueEdge]
+  nodes: [Issue]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type IssueEdge {
+  cursor: String!
+  node: Issue
+}
+
+type Issue {
+  id: ID!
+  number: Int!
+  title: String!
+  body: String
+  state: IssueState!
+  url: String!
+  author: Actor
+  createdAt: String!
+  updatedAt: String!
+  repository: Repository!
+}
+
+enum PullRequestState {
+  OPEN
+  CLOSED
+  MERGED
+}
+
+type PullRequestConnection {
+  edges: [PullRequestEdge]
+  nodes: [PullRequest]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PullRequestEdge {
+  cursor: String!
+  node: PullRequest
+}
+
+type PullRequest {
+  id: ID!
+  number: Int!
+  title: String!
+  body: String
+  state: PullRequestState!
+  url: String!
+  author: Actor
+  createdAt: String!
+  updatedAt: String!
+  repository: Repository!
+}
+
+type FollowerConnection {
+  edges: [FollowerEdge]
+  nodes: [User]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type FollowerEdge {
+  cursor: String!
+  node: User
+}
+
+type FollowingConnection {
+  edges: [FollowingEdge]
+  nodes: [User]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type FollowingEdge {
+  cursor: String!
+  node: User
+}
+
+interface Actor {
+  login: String!
+  url: String!
+  avatarUrl: String!
+}
+
+scalar GitObjectID
+
+
+interface GitObject {
+  abbreviatedOid: String!
+  commitResourcePath: URI!
+  commitUrl: URI!
+  id: ID!
+  oid: GitObjectID!
+  repository: Repository!
+}
+
+interface Node {
+  id: ID!
+}
+
+scalar URI
+scalar DateTime
+
+type Blob implements GitObject & Node {
+  abbreviatedOid: String!
+  byteSize: Int!
+  commitResourcePath: URI!
+  commitUrl: URI!
+  id: ID!
+  isBinary: Boolean
+  isTruncated: Boolean!
+  oid: GitObjectID!
+  repository: Repository!
+  text: String
+}

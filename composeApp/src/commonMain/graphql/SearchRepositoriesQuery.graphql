@@ -1,0 +1,41 @@
+# Query to search for repositories
+query SearchRepositoriesQuery($query: String!, $first: Int = 10) {
+  search(query: $query, type: REPOSITORY, first: $first) {
+    repositoryCount
+    edges {
+      node {
+        ... on Repository {
+          id
+          name
+          nameWithOwner
+          description
+          url
+          stargazerCount
+          forkCount
+          owner {
+            login
+            avatarUrl
+          }
+          latestRelease {
+            ...ReleaseFragment
+          }
+          primaryLanguage {
+            name
+            color
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ReleaseFragment on Release {
+  name
+  description
+  tagName
+  url
+  publishedAt
+  updatedAt
+  isLatest
+  isPrerelease
+}

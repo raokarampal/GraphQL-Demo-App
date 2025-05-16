@@ -1,0 +1,26 @@
+# Query to get information about the currently authenticated user
+query ViewerQuery {
+  viewer {
+    login
+    name
+    avatarUrl
+    bio
+    company
+    location
+    url
+    repositories(first: 10) {
+      totalCount
+      nodes {
+        name
+        description
+        url
+        stargazerCount
+        forkCount
+        primaryLanguage {
+          name
+          color
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+# Query to get detailed information about a specific repository
+query RepositoryDetailsQuery($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    id
+    name
+    nameWithOwner
+    description
+    url
+    homepageUrl
+    stargazerCount
+    forkCount
+    isPrivate
+    obj1:object(expression: "HEAD:README.md") {
+      ...ReadmeContent
+    }
+    obj2:object(expression: "HEAD:readme.md") {
+      ...ReadmeContent
+    }
+    obj3:object(expression: "HEAD:ReadMe.md") {
+      ...ReadmeContent
+    }
+    obj4:object(expression: "HEAD:Readme.md") {
+      ...ReadmeContent
+    }
+    owner {
+      login
+      avatarUrl
+      url
+    }
+    primaryLanguage {
+      name
+      color
+    }
+    languages(first: 10) {
+      totalCount
+      nodes {
+        name
+        color
+      }
+    }
+    issues(first: 5, states: [OPEN]) {
+      totalCount
+      nodes {
+        number
+        title
+        url
+        state
+        createdAt
+        author {
+          login
+          avatarUrl
+        }
+      }
+    }
+    pullRequests(first: 5, states: [OPEN]) {
+      totalCount
+      nodes {
+        number
+        title
+        url
+        state
+        createdAt
+        author {
+          login
+          avatarUrl
+        }
+      }
+    }
+    latestRelease {
+      ...ReleaseFragment
+    }
+    releases(first: 10){
+      nodes {
+        ...ReleaseFragment
+      }
+    }
+  }
+}
+
+fragment ReadmeContent on Blob {
+  text
+}
+
