@@ -78,7 +78,7 @@ class GitHubRepositoryImpl(
                 if (repoData != null) {
                     val readmeContent =
                         repoData.obj1?.readmeContent ?: repoData.obj2?.readmeContent ?: repoData.obj3?.readmeContent
-                        ?: repoData.obj4?.readmeContent
+                        ?: repoData.obj4?.readmeContent ?: repoData.obj5?.readmeContent
                     val readme = GitHubRepositoryDetails.Readme(
                         readmeContent?.text ?: "No Readme.md Found"
                     )

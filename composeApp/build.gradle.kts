@@ -159,10 +159,14 @@ sqldelight {
 }
 
 apollo {
-    service("api") {
+    service("GithubGraphQLApi") {
         // GraphQL configuration here.
         // https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/
         packageName.set("com.droidslife.graphqldemo.graphql")
+        introspection {
+            endpointUrl.set("https://api.github.com/graphql")
+            schemaFile.set(file("src/commonMain/graphql/schema.graphqls"))
+        }
     }
 }
 

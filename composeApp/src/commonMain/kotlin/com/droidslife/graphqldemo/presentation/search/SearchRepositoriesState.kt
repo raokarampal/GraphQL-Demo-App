@@ -7,7 +7,7 @@ import com.droidslife.graphqldemo.domain.model.GitHubRepository
  * This class represents the state of the UI at any given time.
  */
 data class SearchRepositoriesState(
-    val searchQuery: String = "kotlin",
+    val searchQuery: String = "raokarampal/GraphQL-Demo-App",
     val repositories: List<GitHubRepository> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null

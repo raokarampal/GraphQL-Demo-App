@@ -22,6 +22,9 @@ query RepositoryDetailsQuery($owner: String!, $name: String!) {
     obj4:object(expression: "HEAD:Readme.md") {
       ...ReadmeContent
     }
+    obj5:object(expression: "HEAD:README.MD") {
+      ...ReadmeContent
+    }
     owner {
       login
       avatarUrl

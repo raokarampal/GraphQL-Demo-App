@@ -260,11 +260,13 @@ private fun RepositoryListContent(
         }
 
         // Repository list
-        Text(
-            text = "Found ${state.repositories.size} repositories",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+        if (!state.isLoading) {
+            Text(
+                text = "Found ${state.repositories.size} repositories",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
 
         LazyColumn(
             modifier = Modifier.weight(1f)
